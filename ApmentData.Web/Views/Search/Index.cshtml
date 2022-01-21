@@ -1,0 +1,45 @@
+﻿@page
+@using ApmentData.Web.Models
+@model Scope
+@{
+    ViewBag.Title = "Search Condominium";
+    Layout = "_Layout";
+}
+<br />
+<br />
+<br />
+
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<div class="text-center">
+    <input width="50" id="searchInput" placeholder="Type here to search..."/> @Html.DropDownListFor(model => model.market, new SelectList(ViewBag.Scopes), "<-- Select Market -->", new{id = "dropdown"})
+</div>
+
+
+@*Este es el searchbar*@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#searchInput").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetBinding", "Search")',
+                    dataType: "json",
+                    data: { term: request.term, market: $("#dropdown").change().val()},
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item, value: item }
+                        }))
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
+    });
+</script>
